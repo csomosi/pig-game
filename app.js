@@ -1,10 +1,9 @@
-// először az értékadásnál LET-el kezdtük, majd előre tettük a LET változó deklarálást és később értéket adtunk neki, de a szöveget már nem változtattam.
-
-let scores, roundScore, activePlayer;
+let scores, roundScore, activePlayer, previousDices;
 
 // both player starts with 0, define an array for scores:
 function newGame() {
   scores = [0, 0];
+  previousDices = [0, 0];
 
   // variable for the actual player's points in the actual round:
 
@@ -41,6 +40,13 @@ newGame();
 document.querySelector(".btn-roll").addEventListener("click", function () {
   // 1. generate a random  nuber betw. 1-6
   const dice = Math.floor(Math.random() * 6 + 1);
+  console.log(
+    "Player" +
+      activePlayer +
+      "'s previous dice was: " +
+      previousDices[activePlayer]
+  );
+  console.log("Player" + activePlayer + " tossed a " + dice);
 
   // 2. print the number on UI:
   document.querySelector(".dice").style.display = "block";
@@ -48,19 +54,33 @@ document.querySelector(".btn-roll").addEventListener("click", function () {
   // 3. change the dice picture to the tossed value:
   document.querySelector(".dice").setAttribute("src", `dice-${dice}.png`);
 
-  // A $ jeles megoldás helyett lejhene így is öszerakni a fájlnevet:
-  // 'dice-'+dice+'.png'
+  // if tossed value = 6 AND previousDices = 6 than end of turn, next player goes:
 
-  // If tossed value is other than 1 we add the value.
-  if (dice !== 1) {
-    roundScore = roundScore + dice;
-    // show player's result on UI:
-    document.querySelector("#current-" + activePlayer).textContent = roundScore;
-
-    // if tossed value is 1 then points are lost, and other player's turn.
-  } else {
+  if (dice == 6 && previousDices[activePlayer] == 6) {
+    previousDices[activePlayer] = 0;
+    scores[activePlayer] = 0;
+    // refresh UI:
+    document.querySelector("#score-" + activePlayer).textContent =
+      scores[activePlayer];
     nextPlayer();
+    return;
+  } else {
+    // we store the tossed value in an array previousDices to have it for the next toss:
+    previousDices[activePlayer] = dice;
+    // If tossed value is other than 1 we add the value.
+    if (dice !== 1) {
+      roundScore = roundScore + dice;
+      // show player's result on UI:
+      document.querySelector("#current-" + activePlayer).textContent =
+        roundScore;
+
+      // if tossed value is 1 then points are lost, and other player's turn.
+    } else {
+      nextPlayer();
+    }
   }
+
+  console.log("updated values of array previousDices are: " + previousDices);
 });
 
 // creating a function for the above {else} code-portion (other player's turn)
@@ -82,15 +102,13 @@ function nextPlayer() {
 document.querySelector(".btn-hold").addEventListener("click", function () {
   // 1. player holds points:
   scores[activePlayer] = scores[activePlayer] + roundScore;
-  // you can reach the same result with this shorter code:
-  // scores[activePlayer] += roundScore;
 
   // 2. refresh UI:
   document.querySelector("#score-" + activePlayer).textContent =
     scores[activePlayer];
 
   // 3. is there a winner?
-  if (scores[activePlayer] >= 20) {
+  if (scores[activePlayer] >= 100) {
     document
       .querySelector(`.player-${activePlayer}-panel`)
       .classList.add("winner");
@@ -108,16 +126,3 @@ document.querySelector(".btn-hold").addEventListener("click", function () {
 });
 
 document.querySelector(".btn-new").addEventListener("click", newGame);
-
-// ----- hogyan működik a függvény átadása egy másik függvénynek?
-
-// function buttonClicked() {
-//   console.log("megnyom");
-// }
-
-// function handleEvent(myFunction) {
-//   myFunction();
-// }
-
-// handleEvent(buttonClicked);
-// -----
