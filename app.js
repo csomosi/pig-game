@@ -1,9 +1,25 @@
-let scores, roundScore, activePlayer, previousDices;
+let scores, roundScore, activePlayer, previousDices, finalScore;
 
-// both player starts with 0, define an array for scores:
+console.log("finalScore is: " + finalScore);
+
 function newGame() {
+  // both player starts with 0, define an array for scores:
   scores = [0, 0];
+  // define an array for previous dice, and let it 0
+
   previousDices = [0, 0];
+
+  // get the value of final score from input box:
+
+  finalScore = document.querySelector(".final-score").value;
+
+  // if input field is empty then finalscore is 100
+
+  if (finalScore === "") {
+    finalScore = 100;
+  }
+  console.log("finalScore is: " + finalScore);
+  console.log("finalScore type is: " + typeof finalScore);
 
   // variable for the actual player's points in the actual round:
 
@@ -35,6 +51,7 @@ function newGame() {
 }
 
 newGame();
+
 // toss the dice:
 
 document.querySelector(".btn-roll").addEventListener("click", function () {
@@ -108,7 +125,7 @@ document.querySelector(".btn-hold").addEventListener("click", function () {
     scores[activePlayer];
 
   // 3. is there a winner?
-  if (scores[activePlayer] >= 100) {
+  if (scores[activePlayer] >= finalScore) {
     document
       .querySelector(`.player-${activePlayer}-panel`)
       .classList.add("winner");
