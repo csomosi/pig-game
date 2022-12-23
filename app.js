@@ -1,17 +1,13 @@
-// először az értékadásnál LET-el kezdtük, majd előre tettük a LET változó deklarálást és később értéket adtunk neki, de a szöveget már nem változtattam.
-
 let scores, roundScore, activePlayer;
 
-// both player starts with 0, define an array for scores:
 function newGame() {
+  // both player starts with 0, define an array for scores:
   scores = [0, 0];
 
   // variable for the actual player's points in the actual round:
-
   roundScore = 0;
 
   // variable to indicate who is the active player (0 or 1):
-
   activePlayer = 0;
 
   // select the HTML element with # ID and modyfy the text content to 0:
@@ -21,8 +17,8 @@ function newGame() {
   document.querySelector("#current-1").textContent = 0;
 
   // by starting the app, the dice is invisible:
-
-  document.querySelector(".dice").style.display = "none";
+  document.querySelector("#dice-1").style.display = "none";
+  document.querySelector("#dice-2").style.display = "none";
 
   // finishing a game, we set a lot of things, so for new game we need to set them to default:
   document.querySelector(".btn-roll").style.display = "block";
@@ -36,28 +32,28 @@ function newGame() {
 }
 
 newGame();
-// toss the dice:
 
+// toss the dices:
 document.querySelector(".btn-roll").addEventListener("click", function () {
   // 1. generate a random  nuber betw. 1-6
-  const dice = Math.floor(Math.random() * 6 + 1);
+  const diceOne = Math.floor(Math.random() * 6 + 1);
+  const diceTwo = Math.floor(Math.random() * 6 + 1);
 
   // 2. print the number on UI:
-  document.querySelector(".dice").style.display = "block";
+  document.querySelector("#dice-1").style.display = "block";
+  document.querySelector("#dice-2").style.display = "block";
 
-  // 3. change the dice picture to the tossed value:
-  document.querySelector(".dice").setAttribute("src", `dice-${dice}.png`);
+  // 3. change the dice pictures to the tossed value:
+  document.querySelector("#dice-1").setAttribute("src", `dice-${diceOne}.png`);
+  document.querySelector("#dice-2").setAttribute("src", `dice-${diceTwo}.png`);
 
-  // A $ jeles megoldás helyett lejhene így is öszerakni a fájlnevet:
-  // 'dice-'+dice+'.png'
-
-  // If tossed value is other than 1 we add the value.
-  if (dice !== 1) {
-    roundScore = roundScore + dice;
+  // If either of the tossed values are other than 1 we add both value.
+  if (diceOne !== 1 && diceTwo !== 1) {
+    roundScore = roundScore + diceOne + diceTwo;
     // show player's result on UI:
     document.querySelector("#current-" + activePlayer).textContent = roundScore;
 
-    // if tossed value is 1 then points are lost, and other player's turn.
+    // if any of the tossed values is 1 then points are lost, and other player's turn.
   } else {
     nextPlayer();
   }
@@ -72,7 +68,6 @@ function nextPlayer() {
     activePlayer = 0;
   }
   // refresh UI:
-
   document.querySelector("#current-0").textContent = 0;
   document.querySelector("#current-1").textContent = 0;
   document.querySelector(".player-0-panel").classList.toggle("active");
@@ -82,8 +77,6 @@ function nextPlayer() {
 document.querySelector(".btn-hold").addEventListener("click", function () {
   // 1. player holds points:
   scores[activePlayer] = scores[activePlayer] + roundScore;
-  // you can reach the same result with this shorter code:
-  // scores[activePlayer] += roundScore;
 
   // 2. refresh UI:
   document.querySelector("#score-" + activePlayer).textContent =
@@ -98,7 +91,8 @@ document.querySelector(".btn-hold").addEventListener("click", function () {
       .querySelector(`.player-${activePlayer}-panel`)
       .classList.remove("active");
     document.querySelector("#name-" + activePlayer).textContent = "Winner!";
-    document.querySelector(".dice").style.display = "none";
+    document.querySelector("#dice-1").style.display = "none";
+    document.querySelector("#dice-2").style.display = "none";
     document.querySelector(".btn-roll").style.display = "none";
     document.querySelector(".btn-hold").style.display = "none";
   } else {
@@ -108,16 +102,3 @@ document.querySelector(".btn-hold").addEventListener("click", function () {
 });
 
 document.querySelector(".btn-new").addEventListener("click", newGame);
-
-// ----- hogyan működik a függvény átadása egy másik függvénynek?
-
-// function buttonClicked() {
-//   console.log("megnyom");
-// }
-
-// function handleEvent(myFunction) {
-//   myFunction();
-// }
-
-// handleEvent(buttonClicked);
-// -----
